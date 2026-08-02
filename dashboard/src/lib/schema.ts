@@ -143,6 +143,48 @@ export const VoiceVsAgreementSchema = z.object({
 });
 export type VoiceVsAgreementData = z.infer<typeof VoiceVsAgreementSchema>;
 
+/**
+ * Phase 2: a model's brand recommendations scored against the ESCI judgements.
+ * Optional. The dashboard renders this section only when the file is present.
+ */
+export const ModelEvalQuerySchema = z.object({
+  query: z.string(),
+  response: z.string(),
+  named: z.array(z.string()),
+  recall: z.number().nullable(),
+  precision: z.number().nullable(),
+  precisionInCorpus: z.number().nullable(),
+  substituteRate: z.number().nullable(),
+  offCorpusRate: z.number().nullable(),
+  leaderCaptured: z.boolean().nullable(),
+  namedCount: z.number(),
+  inCorpusCount: z.number(),
+});
+export type ModelEvalQuery = z.infer<typeof ModelEvalQuerySchema>;
+
+export const ModelEvalSchema = z.object({
+  model: z.string(),
+  generatedAt: z.string(),
+  queries: z.number(),
+  tokensIn: z.number(),
+  tokensOut: z.number(),
+  estCostUsd: z.number(),
+  prompt: z.string(),
+  note: z.string(),
+  aggregate: z.object({
+    recall: z.number().nullable(),
+    precision: z.number().nullable(),
+    precisionInCorpus: z.number().nullable(),
+    substituteRate: z.number().nullable(),
+    offCorpusRate: z.number().nullable(),
+    leaderCaptureRate: z.number().nullable(),
+    meanNamed: z.number().nullable(),
+    meanInCorpus: z.number().nullable(),
+  }),
+  perQuery: z.array(ModelEvalQuerySchema),
+});
+export type ModelEval = z.infer<typeof ModelEvalSchema>;
+
 export const EsciDataSchema = z.object({
   meta: MetaSchema,
   totals: TotalsSchema,

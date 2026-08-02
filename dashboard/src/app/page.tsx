@@ -2,9 +2,10 @@ import { BrandExplorer } from '@/components/BrandExplorer';
 import { CompetitiveSets } from '@/components/CompetitiveSets';
 import { Hero } from '@/components/Hero';
 import { Methodology } from '@/components/Methodology';
+import { ModelEval } from '@/components/ModelEval';
 import { SubstituteGraph } from '@/components/SubstituteGraph';
 import { VoiceVsAgreement } from '@/components/VoiceVsAgreement';
-import { loadEsciData } from '@/lib/data';
+import { loadEsciData, loadModelEval } from '@/lib/data';
 
 /**
  * Server component: reads and validates the precomputed data once at build time,
@@ -16,17 +17,19 @@ import { loadEsciData } from '@/lib/data';
  * for.
  */
 
-const NAV = [
-  { href: '#start', label: 'Start here' },
-  { href: '#voice', label: 'Voice vs agreement' },
-  { href: '#sets', label: 'Competitive sets' },
-  { href: '#brands', label: 'Brands' },
-  { href: '#substitutes', label: 'Substitutes' },
-  { href: '#method', label: 'Method' },
-];
-
 export default async function Page() {
   const data = await loadEsciData();
+  const modelEval = await loadModelEval();
+
+  const nav = [
+    { href: '#start', label: 'Start here' },
+    { href: '#voice', label: 'Voice vs agreement' },
+    { href: '#sets', label: 'Competitive sets' },
+    { href: '#brands', label: 'Brands' },
+    { href: '#substitutes', label: 'Substitutes' },
+    ...(modelEval ? [{ href: '#model', label: 'Model test' }] : []),
+    { href: '#method', label: 'Method' },
+  ];
 
   return (
     <div className="min-h-screen bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
@@ -44,7 +47,7 @@ export default async function Page() {
             </p>
           </div>
           <nav aria-label="Sections" className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
@@ -63,17 +66,19 @@ export default async function Page() {
         <CompetitiveSets sets={data.competitiveSets} />
         <BrandExplorer brands={data.brands} />
         <SubstituteGraph pairs={data.substitutePairs} />
+        {modelEval && <ModelEval data={modelEval} />}
         <Methodology meta={data.meta} totals={data.totals} />
 
-        <section className="flex flex-col gap-3 border-t border-neutral-200 pt-8 dark:border-neutral-800">
-          <h2 className="text-sm font-semibold">Next</h2>
-          <p className="max-w-3xl text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-            Put these queries to a model and score the answers against the judgements: recall against
-            the Exact set, precision, substitute rate, and how often it names a brand nobody judged.
-            The last of those is the hard one, since a genuine invention and a product released after
-            2022 look identical from here.
-          </p>
-        </section>
+        {!modelEval && (
+          <section className="flex flex-col gap-3 border-t border-neutral-200 pt-8 dark:border-neutral-800">
+            <h2 className="text-sm font-semibold">Next</h2>
+            <p className="max-w-3xl text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+              Put these queries to a model and score the answers against the judgements: recall
+              against the Exact set, precision, substitute rate, and how often it names a brand nobody
+              judged.
+            </p>
+          </section>
+        )}
       </main>
 
       <footer className="border-t border-neutral-200 dark:border-neutral-800">

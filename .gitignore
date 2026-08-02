@@ -18,3 +18,6 @@ out/
 # optimisation, not a source of truth: the committed esci.json is.
 scripts/.cache/
 scripts/*.log
+
+# Phase 2 scoring checkpoint (partial run; final output is model_eval.json)
+dashboard/public/data/*.partial.json

@@ -313,6 +313,59 @@ else:
         )
     )
 
+# ---- Phase 2 model evaluation (optional) ----
+eval_path = pathlib.Path("../dashboard/public/data/model_eval.json")
+if eval_path.exists():
+    me = json.loads(eval_path.read_text(encoding="utf-8"))
+    a = me["aggregate"]
+
+    check("model_eval perQuery count matches queries", me["queries"], len(me["perQuery"]))
+
+    for field in ("recall", "precision", "precisionInCorpus", "offCorpusRate", "leaderCaptureRate"):
+        val = a.get(field)
+        results.append(
+            (val is None or 0.0 <= val <= 1.0, f"aggregate {field} is a rate in [0,1]", f"{val}")
+        )
+
+    # The coverage gap that keeps off-corpus from being a hallucination rate.
+    results.append(
+        (
+            a["meanNamed"] > a["meanInCorpus"],
+            "model names more brands than ESCI judged per query (coverage gap)",
+            f"named {a['meanNamed']} vs judged {a['meanInCorpus']}",
+        )
+    )
+
+    # In-corpus precision should exceed raw precision, since it drops uncovered brands.
+    results.append(
+        (
+            a["precisionInCorpus"] >= a["precision"],
+            "in-corpus precision is at least raw precision",
+            f"{a['precisionInCorpus']} vs {a['precision']}",
+        )
+    )
+
+    # Spot-check one query's recall against the committed ground truth.
+    def norm(s: str) -> str:
+        k = s.casefold().replace("-", " ").replace(".", "")
+        return " ".join(k.split())
+
+    set_by_query = {s["query"]: s for s in data["competitiveSets"]}
+    spot = next((r for r in me["perQuery"] if r["query"] in set_by_query and r["recall"] is not None), None)
+    if spot:
+        judged = set_by_query[spot["query"]]
+        exact_keys = {norm(b["brand"]) for b in judged["brands"] if b["label"] == "Exact"}
+        named_keys = {norm(n) for n in spot["named"]}
+        hit = len(named_keys & exact_keys)
+        expected = round(hit / len(exact_keys), 3) if exact_keys else None
+        results.append(
+            (
+                expected is None or abs(expected - spot["recall"]) <= 0.01,
+                f"recall recomputes for {spot['query'][:30]!r}",
+                f"stored {spot['recall']} vs recomputed {expected}",
+            )
+        )
+
 # ---- output ----
 passed = sum(1 for ok, _, _ in results if ok)
 failed = len(results) - passed
