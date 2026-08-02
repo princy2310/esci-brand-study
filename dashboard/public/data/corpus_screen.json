@@ -1,0 +1,89 @@
+{
+  "generatedAt": "2026-08-02T02:56:46Z",
+  "intentPattern": "\\b(best|top|recommend\\w*|which\\s+(one|brand|product|should)|vs\\.?|versus|compare|alternative[s]?|better\\s+than|worth\\s+buying|should\\s+i\\s+(buy|get|use)|cheapest|good\\s+for|looking\\s+for\\s+a)\\b",
+  "note": "Licence, gating, row counts and column lists are published facts read from the Hugging Face API. Intent percentages are measured here with the regex above over a sampled prefix of each corpus, and are not published statistics. The decisive test is the brand column, which is structural.",
+  "corpora": [
+    {
+      "dataset": "tasksource/esci",
+      "license": "apache-2.0",
+      "gated": false,
+      "rows": 2680364,
+      "config": "default",
+      "columns": [
+        "esci_label",
+        "example_id",
+        "large_version",
+        "product_brand",
+        "product_bullet_point",
+        "product_color",
+        "product_description",
+        "product_id",
+        "product_locale",
+        "product_text",
+        "product_title",
+        "query",
+        "query_id",
+        "small_version"
+      ],
+      "hasBrandColumn": true,
+      "error": null,
+      "textField": "query",
+      "sampled": 2000,
+      "intentHits": 62,
+      "intentPct": 3.1,
+      "intentWithProperNounPct": 0.25,
+      "examples": [
+        "Nice new top of the range laptop with maybe where the screen comes away on it's own",
+        "I would look for a Windows 10 laptop nearer the top end of specification. I'd prefer an SSD and at least 8Gb o",
+        "The jacket I would try to replace with the one I wear daily is a top gun bomber jacket."
+      ]
+    },
+    {
+      "dataset": "lmarena-ai/arena-human-preference-140k",
+      "license": "cc-by-4.0",
+      "gated": false,
+      "rows": 135634,
+      "config": "default",
+      "columns": [
+        "category_tag",
+        "conv_metadata",
+        "conversation_a",
+        "conversation_b",
+        "evaluation_order",
+        "evaluation_session_id",
+        "full_conversation",
+        "id",
+        "is_code",
+        "language",
+        "model_a",
+        "model_b",
+        "timestamp",
+        "winner"
+      ],
+      "hasBrandColumn": false,
+      "error": null,
+      "textField": "conversation_a",
+      "sampled": 2000,
+      "intentHits": 118,
+      "intentPct": 5.9,
+      "intentWithProperNounPct": 3.25,
+      "examples": [
+        "Compare Tormenta20 with DnD5e",
+        "Solve the following game of Freecell. Cards in later lines are on top of cards in earlier lines.\n```\n4\u2663 3\u2666 3\u2660 ",
+        "Hi, can you improve on this code with better UI and especially UX?\n<head> <meta charset=\"UTF-8\"> <title>Evalua"
+      ]
+    },
+    {
+      "dataset": "NomaDamas/geobench",
+      "license": null,
+      "gated": null,
+      "rows": null,
+      "config": null,
+      "columns": [],
+      "hasBrandColumn": false,
+      "error": "HTTP 401",
+      "intentPct": null,
+      "sampled": 0
+    }
+  ]
+}
