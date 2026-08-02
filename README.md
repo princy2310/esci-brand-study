@@ -1,7 +1,18 @@
 # ESCI Brand Study
 
-A dashboard over Amazon's Shopping Queries Dataset (ESCI) showing which brands human raters judged
-relevant to each query.
+**Live dashboard: https://princy2310.github.io/esci-brand-study/**
+
+Answer engine optimization tools measure brand visibility in AI answers: how often a brand is named,
+its share of voice, its position. This study measures something adjacent and largely unreported,
+whether those recommendations are correct. It builds a ground-truth benchmark from Amazon's Shopping
+Queries Dataset (ESCI), where human raters labelled which brands are genuinely relevant to each
+query, then ranks brands by agreement with those judgements rather than by presence alone.
+
+Share of voice and agreement turn out to rank the same brands differently: a brand can lead on
+visibility while raters consistently judged it a weak match, and the dashboard isolates those cases.
+The result is a correctness baseline for AI product recommendations that sits alongside the
+visibility metrics AEO and GEO platforms already track, and a foundation for scoring live model
+answers against human ground truth.
 
 ## Prerequisites
 
